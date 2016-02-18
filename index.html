@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Fun with Audio</title>
+  </head>
+
+  <body>
+    Play Audio:
+    <select id="frequency">
+        <option value="21000">21.0kHz</option>
+        <option value="21100">21.1kHz</option>
+        <option value="21200">21.2kHz</option>
+        <option value="21300">21.3kHz</option>
+        <option value="21400">21.4kHz</option>
+        <option value="21500">21.5kHz</option>
+        <option value="21600">21.6kHz</option>
+        <option value="21700">21.7kHz</option>
+        <option value="21800">21.8kHz</option>
+        <option value="21900">21.9kHz</option>
+        <option value="22000">22.0kHz</option>
+    </select>
+    <button onClick="playTone()">Play Tone</button>
+    <h1 id="playing"></h1>
+  <script>
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    //start an oscillator playing a particular tone & give it an analyser
+    function playTone() {
+      oscillator = audioCtx.createOscillator();
+      analyser = audioCtx.createAnalyser();
+      oscillator.connect(analyser);
+      oscillator.type = 'sine';
+      console.log(document.getElementById("frequency").value)
+      oscillator.frequency.value = document.getElementById("frequency").value; //value in hertz
+      oscillator.start();
+    }
+
+    function analyse() {
+      analyser.fftSize = 2048; //size of fft frames.
+      var bufferLength = analyser.frequencyBinCount;
+      var dataArray = new Uint8Array(bufferLength);
+      analyser.getByteFrequencyData(dataArray);
+
+      var playing=false;
+      for (i=21000; !playing && i<22100; i=i+100) {
+        //to calculate the FFT bin to check if a frequency is playing, use bin is n * Fs / N Fs is the sample rate and N is the size of the FFT.
+        var bin = Math.floor(i * 2048 / audioCtx.sampleRate);
+        if (dataArray[bin]) {
+          document.getElementById("playing").textContent = "Playing " + i + "hz";
+          playing = true;
+        }
+        if (!playing) {
+          document.getElementById("playing").textContent = "No sound is playing";
+        }
+      }
+    }
+
+    setInterval(function() {
+      analyse();
+    }, 1000);
+  </script>
+  </body>
+</html>
