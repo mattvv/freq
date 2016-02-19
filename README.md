@@ -1,6 +1,11 @@
 # Frequency Recognizer
 An example of using Frequencies to pass messages along using Web Audio API.
 
+## Demo
+Check out the demo [here](https://mattvv.github.com/freq "Freq Demo")
+
+## About
+
 The idea behind this is pretty simple, but the execution is a little harder. What if you wanted to pass a message a long an audio stream at human inaudible frequencies but have the computer able to recognize these frequencies.
 
 To do this, I use WebAPI's oscillator to create a sine wave at a particular frequency, and then I can examine the FFT bins to determine if sound is broadcasting on this particular frequency.
